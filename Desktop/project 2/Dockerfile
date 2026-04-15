@@ -1,9 +1,11 @@
-# Use Maven to build the app
-FROM maven:3.8.5-openjdk-17 AS build
-COPY . .
-RUN mvn clean package -DskipTests
-
-# Run the app
+# Use OpenJDK 17 as the base image
 FROM openjdk:17-jdk-slim
-COPY --from=build /target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built JAR file from the target folder to the container
+COPY target/*.jar app.jar
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
