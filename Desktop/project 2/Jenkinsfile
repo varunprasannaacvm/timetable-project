@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven 'M3' // This must match the name in Global Tool Configuration
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/varunprasannaacvm/timetable-project.git'
+            }
+        }
+        
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t timetable-app:latest .'
+            }
+        }
+
+        stage('Kubernetes Deploy') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+            }
+        }
+    }
+}
